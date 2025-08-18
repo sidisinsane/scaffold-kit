@@ -28,6 +28,8 @@ Project documentation with Markdown.
 
 - Serve (with `.env`): `uv run --env-file .env mkdocs serve`
 - Build (with `.env`): `uv run --env-file .env mkdocs build`
+- Deploy to Github Pages (with `.env`):
+  `uv run --env-file .env mkdocs gh-deploy`
 
 `mkdocs.yaml`:
 

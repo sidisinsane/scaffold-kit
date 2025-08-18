@@ -13,11 +13,17 @@ dependencies = [
   "pyyaml~=6.0.2",
 ]
 keywords = [
-  "scaffolding",
+  "scaffold",
+  "productivity",
+  "generator",
   "project-structure",
-  "file-management",
+  "cli",
+  "cli-tool",
+  "command-line",
+  "command-line-tool",
+  "tree",
+  "file-tree",
   "directory-tree",
-  "cli-tools",
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
