@@ -730,6 +730,8 @@ need this.</p>
 <ul>
 <li>Serve (with <code>.env</code>): <code>uv run --env-file .env mkdocs serve</code></li>
 <li>Build (with <code>.env</code>): <code>uv run --env-file .env mkdocs build</code></li>
+<li>Deploy to Github Pages (with <code>.env</code>):
+  <code>uv run --env-file .env mkdocs gh-deploy</code></li>
 </ul>
 <p><code>mkdocs.yaml</code>:</p>
 <pre><code class="language-yaml">repo_name: !ENV [REPO_PATH, username/repo-name]
@@ -1054,11 +1056,17 @@ dependencies = [
   &quot;pyyaml~=6.0.2&quot;,
 ]
 keywords = [
-  &quot;scaffolding&quot;,
+  &quot;scaffold&quot;,
+  &quot;productivity&quot;,
+  &quot;generator&quot;,
   &quot;project-structure&quot;,
-  &quot;file-management&quot;,
+  &quot;cli&quot;,
+  &quot;cli-tool&quot;,
+  &quot;command-line&quot;,
+  &quot;command-line-tool&quot;,
+  &quot;tree&quot;,
+  &quot;file-tree&quot;,
   &quot;directory-tree&quot;,
-  &quot;cli-tools&quot;,
 ]
 classifiers = [
   &quot;Development Status :: 4 - Beta&quot;,
