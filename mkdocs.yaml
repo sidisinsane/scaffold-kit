@@ -1,0 +1,119 @@
+repo_name: !ENV [REPO_PATH, username/repo-name]
+repo_url: !ENV [REPO_URL, https://github.com/username/repo-name]
+docs_dir: !ENV [DOCS_DIR, docs]
+dev_addr: !ENV [DEV_ADDR, 127.0.0.1:8888]
+site_dir: !ENV [SITE_DIR, site]
+site_name: !ENV [SITE_NAME, My default site name]
+site_description: !ENV [SITE_DESCRIPTION, My default site description.]
+site_url: !ENV [SITE_URL, https://username.github.io/repo-name]
+copyright: !ENV [SITE_COPYRIGHT, Copyright © 2025-present John Doe.]
+edit_uri: !ENV [EDIT_URI, edit/main/docs/]
+use_directory_urls: true
+
+draft_docs: |
+  draft.*.md
+
+plugins:
+  - mkdocs-nav-weight:
+      section_renamed: true
+      index_weight: -10
+      warning: true
+      reverse: false
+      headless_included: false
+  - offline
+  - search
+  - autorefs
+  - mkdocstrings
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+
+theme:
+  name: material
+  language: en
+  favicon: assets/images/favicon.ico
+  logo: assets/images/logo-dark-theme.svg
+  icon:
+    repo: fontawesome/brands/git-alt
+
+  features:
+    - announce.dismiss
+    # - content.action.edit
+    # - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.tooltips
+    - header.autohide
+    - navigation.footer
+    - navigation.indexes
+    - navigation.sections
+    # - navigation.tabs
+    # - navigation.tabs.sticky
+    - navigation.tracking
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - toc.follow
+    - toc.integrate
+
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep-purple
+      accent: yellow
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: yellow
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to light mode
+
+markdown_extensions:
+  - attr_list
+  - admonition
+  - footnotes
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - sane_lists
+  - smarty:
+      smart_dashes: true
+      smart_quotes: true
+      smart_angled_quotes: true
+      smart_ellipses: true
+  - toc:
+      permalink: "#"
+
+extra_javascript:
+  - assets/javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+extra:
+  site_name: !ENV [SITE_NAME, My default site name]
+  site_description: !ENV [SITE_DESCRIPTION, My default site description.]
+  copyright: !ENV [SITE_COPYRIGHT, Copyright © 2025-present John Doe.]
+  repo_url: !ENV [REPO_URL, https://github.com/username/repo-name]
+  repo_name: !ENV [REPO_PATH, username/repo-name]
+  site_url: !ENV [SITE_URL, https://username.github.io/repo-name]
+  site_dir: !ENV [SITE_DIR, site]
+  docs_dir: !ENV [DOCS_DIR, docs]
+  edit_uri: !ENV [EDIT_URI, edit/main/docs/]
+  dev_addr: !ENV [DEV_ADDR, 127.0.0.1:8888]
+  social:
+    - icon: fontawesome/brands/github
+      link: !ENV [GITHUB_URL, https://github.com/username]

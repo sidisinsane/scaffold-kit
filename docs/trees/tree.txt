@@ -1,0 +1,84 @@
+.
+├── docs/
+│   ├── assets/
+│   │   ├── icons/
+│   │   │   ├── codepen.svg
+│   │   │   ├── github.svg
+│   │   │   ├── linkedin.svg
+│   │   │   ├── x.svg
+│   │   │   └── xing.svg
+│   │   ├── images/
+│   │   │   ├── favicon.ico
+│   │   │   ├── logo-dark-theme.svg
+│   │   │   ├── logo-light-theme.svg
+│   │   │   └── logo.svg
+│   │   ├── javascripts/
+│   │   │   ├── extra.js
+│   │   │   └── mathjax.js
+│   │   └── stylesheets/
+│   │       └── extra.css
+│   ├── checklists/
+│   │   └── empty-files-checklist.txt
+│   ├── trees/
+│   │   ├── tree-examples.txt
+│   │   └── tree.txt
+│   ├── fucs.md
+│   ├── index.md
+│   └── license.md
+├── examples/
+│   ├── configs/
+│   │   ├── .scaffoldignore
+│   │   ├── .scaffoldkitrc
+│   │   ├── .scaffoldkitrc.json
+│   │   ├── .scaffoldkitrc.yaml
+│   │   ├── scaffoldkitrc.json
+│   │   └── scaffoldkitrc.yaml
+│   ├── scaffold/
+│   │   ├── scaffold.json
+│   │   └── scaffold.yaml
+│   └── .scaffoldignore
+├── sphinx_source/
+│   ├── _static/
+│   │   ├── favicon.ico
+│   │   ├── logo.svg
+│   │   └── README.md
+│   ├── _templates/
+│   ├── conf.py
+│   ├── index.rst
+│   ├── scaffold_kit.cli.rst
+│   ├── scaffold_kit.rst
+│   └── scaffold_kit.utils.rst
+├── src/
+│   └── scaffold_kit/
+│       ├── utils/
+│       │   ├── ignore_parser.py
+│       │   ├── pattern_processor.py
+│       │   └── string_utils.py
+│       ├── checklist.py
+│       ├── config.py
+│       ├── main.py
+│       ├── scaffold.py
+│       └── tree.py
+├── tests/
+├── .coveragerc
+├── .env.example
+├── .gitignore
+├── .markdownlint.yaml
+├── .pre-commit-config.yaml
+├── .pylintrc
+├── .python-version
+├── .scaffoldignore
+├── .scaffoldkitrc.yaml
+├── .yamllint.yaml
+├── bandit.yaml
+├── hatch_build.py
+├── LICENSE
+├── make.bat
+├── Makefile
+├── mkdocs.yaml
+├── mypy.ini
+├── pyproject.toml
+├── pytest.ini
+├── README.md
+├── ruff.toml
+└── taplo.toml
