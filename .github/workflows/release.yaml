@@ -1,0 +1,80 @@
+# yamllint disable rule:line-length
+name: Create Release
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.3.0
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Install asdf & tools
+        uses: asdf-vm/actions/install@v4.0.0
+
+      - name: Cache dependencies
+        uses: actions/cache@v4.2.4
+        with:
+          path: |
+            ~/.cache/uv
+            .venv
+          key: ${{ runner.os }}-uv-${{ hashFiles('uv.lock', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies..."
+          uv sync && uv sync --extra build
+
+      - name: Check if release is needed
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "=== Debugging semantic-release ==="
+          echo "Current git log (last 5 commits):"
+          git log --oneline -5
+          echo ""
+
+          echo "Running semantic-release to check for needed release:"
+          echo "Command: uv run semantic-release --noop version --print"
+
+          # Capture the output from semantic-release
+          OUTPUT=$(uv run semantic-release --noop version --print 2>&1) || true
+          echo "Full output:"
+          echo "$OUTPUT"
+          echo ""
+
+          # Check if semantic-release would create a new version
+          # If it outputs a version (not 0.0.0), then a release is needed
+          if echo "$OUTPUT" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" | grep -v "0\.0\.0"; then
+            echo "release_needed=true" >> $GITHUB_OUTPUT
+            echo "Release is needed"
+          else
+            echo "release_needed=false" >> $GITHUB_OUTPUT
+            echo "No release needed - no relevant commits since last release"
+          fi
+
+      - name: Create release
+        id: release
+        if: ${{ steps.check.outputs.release_needed == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # This will commit, tag, and create the GitHub release
+          uv run semantic-release -v --strict version --skip-build
+          uv run semantic-release publish

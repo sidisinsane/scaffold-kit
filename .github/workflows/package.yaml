@@ -1,0 +1,140 @@
+# yamllint disable rule:line-length
+name: Package and Publish
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    tags: ["*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to build and publish
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      dist_artifacts_name: dist
+      dist_artifacts_dir: dist
+      lock_file_artifact: uv.lock
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.3.0
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - name: Install asdf & tools
+        uses: asdf-vm/actions/install@v4.0.0
+
+      - name: Cache dependencies
+        uses: actions/cache@v4.2.4
+        with:
+          path: |
+            ~/.cache/uv
+            .venv
+          key: ${{ runner.os }}-uv-${{ hashFiles('uv.lock', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies..."
+          uv sync && uv sync --extra build
+
+      - name: Build distribution packages
+        run: |
+          echo "Building distribution packages..."
+          uv build
+
+      - name: Upload distribution artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: ${{ env.dist_artifacts_name }}
+          path: ${{ format('{0}/**', env.dist_artifacts_dir) }}
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload lock file artifact
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: ${{ env.lock_file_artifact }}
+          path: ${{ env.lock_file_artifact }}
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Get package name
+        id: package
+        run: |
+          PACKAGE_NAME=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['name'])")
+          echo "name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+
+    outputs:
+      distribution-artifacts: ${{ env.dist_artifacts_name }}
+      lock-file-artifact: ${{ env.lock_file_artifact }}
+      package-name: ${{ steps.package.outputs.name }}
+
+  publish-testpypi:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/${{ needs.build.outputs.package-name }}/
+    permissions:
+      id-token: write
+    concurrency:
+      group: ${{ github.workflow }}-testpypi
+      cancel-in-progress: true
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4.3.0
+        id: artifact-download
+        with:
+          name: ${{ needs.build.outputs.distribution-artifacts }}
+          path: dist
+
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: dist
+          print-hash: true
+          verbose: true
+
+  publish-pypi:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - publish-testpypi
+    environment:
+      name: pypi
+      url: https://pypi.org/project/${{ needs.build.outputs.package-name }}/
+    permissions:
+      id-token: write
+    concurrency:
+      group: ${{ github.workflow }}-pypi
+      cancel-in-progress: true
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4.3.0
+        id: artifact-download
+        with:
+          name: ${{ needs.build.outputs.distribution-artifacts }}
+          path: dist
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          repository-url: https://pypi.org/
+          packages-dir: dist
+          print-hash: true
+          verbose: true
